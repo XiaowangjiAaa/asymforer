@@ -1,0 +1,77 @@
+# =====================================================================
+# AsymFormer-GSSA 消融实验配置文件
+# 供 check_ablation.py 读取，用于检查各实验是否可运行（模型能否构建 + 前向是否通过）
+#
+# 说明：
+#   - config 中只需写"覆盖默认值"的项，未写项使用 AblationConfig 的默认值。
+#   - 默认值见 src/AsymFormer_GSSA_ablation.py 的 AblationConfig。
+#   - check_ablation.py 会同时校验这里的 config 与代码里 ABLATIONS 注册表是否一致。
+# =====================================================================
+
+num_classes: 2
+input_size: [480, 640]   # [H, W]
+
+experiments:
+  # ---------- Group 1: 核心模块 + 解码器 ----------
+  - name: full
+    group: 1
+    description: 完整模型（基线）
+    config: {}
+
+  - name: wo_gsa
+    group: 1
+    description: 去掉 GSSA 几何结构自注意力
+    config: { use_gsa: false }
+
+  - name: wo_ciff
+    group: 1
+    description: CCFF 融合替换为 cat + 1x1 conv
+    config: { fusion: cat }
+
+  - name: rgb_only
+    group: 1
+    description: 仅 RGB 单分支（去掉深度分支）
+    config: { rgb_only: true }
+
+  - name: simple_decoder
+    group: 1
+    description: 轻量 MLP 解码器替换为单层 1x1 解码器
+    config: { decoder: simple }
+
+  # ---------- Group 2: CIFF 内部拆解 ----------
+  - name: wo_channel_att
+    group: 2
+    description: 去掉通道注意力 MultiScaleSEBlock
+    config: { use_channel_att: false }
+
+  - name: wo_spatial_att
+    group: 2
+    description: 去掉频域空间注意力 SpatialFrequencyAttention
+    config: { use_spatial_att: false }
+
+  - name: wo_repvgg
+    group: 2
+    description: RepVggBlock 替换为普通卷积
+    config: { use_repvgg: false }
+
+  # ---------- Group 3: GSSA 几何先验拆解 ----------
+  - name: wo_struct
+    group: 3
+    description: 去掉结构对比掩码 M_struct
+    config: { use_struct: false }
+
+  - name: wo_depth_prior
+    group: 3
+    description: 去掉深度先验 D
+    config: { use_depth_prior: false }
+
+  - name: wo_spatial_prior
+    group: 3
+    description: 去掉空间先验 S（曼哈顿距离）
+    config: { use_spatial_prior: false }
+
+  # ---------- Group 4: GSSA 注意力机制 ----------
+  - name: full_2d
+    group: 4
+    description: 轴向分解替换为全 2D 注意力
+    config: { use_axial: false }

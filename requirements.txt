@@ -1,0 +1,40 @@
+# =====================================================================
+# AsymFormer-GSSA 项目依赖清单
+#
+# 建议环境: Ubuntu 20.04 / Python 3.8+ / CUDA >= 12.0
+# 参考配置: PyTorch 2.0.1 + CUDA 12.0
+# =====================================================================
+
+# ---------- 深度学习框架 (需按本机 CUDA 版本单独安装) ----------
+# PyTorch 请到官网选择对应 CUDA 版本安装，例如:
+#   pip install torch==2.0.1 torchvision==0.15.2 --index-url https://download.pytorch.org/whl/cu118
+# 或使用 conda:
+#   conda install pytorch==2.0.1 torchvision==0.15.2 pytorch-cuda=12.0 -c pytorch -c nvidia
+torch>=2.0.0
+torchvision>=0.15.0
+
+# ---------- 骨干网络 / 模型组件 ----------
+timm                              # ConvNeXt / MiT 层 (DropPath, trunc_normal 等)
+thop                              # FLOPs / 参数量统计 (profile)
+einops                            # 部分变体 (mix_transformer_mask_s / mlla / DIA) 使用 rearrange
+
+# ---------- 数值与图像处理 ----------
+numpy
+opencv-python-headless==4.5.5.64  # cv2 图像读取/缩放/保存 (README 指定版本)
+scikit-image                      # skimage.transform (MS5_eval / SUNRGBD 多尺度缩放)
+matplotlib                        # HSV 颜色变换 / 损失曲线绘制
+tqdm                              # 训练进度条（剩余/已用时间）
+pyyaml                            # check_ablation.py 读取 ablation_config.yaml
+
+# ---------- 可视化 / 可解释性 ----------
+pytorch-grad-cam                  # grad.py / grad_FSA.py / utils/gradcam.py
+
+# ---------- 部署 / 推理 (可选, 仅 TensorRT 量化与 ONNX 导出时使用) ----------
+# onnx
+# onnxruntime
+# tensorrt==8.6.0                  # 需与 CUDA 版本匹配, 且通常用 pip install 对应 .whl
+# pycuda==2022.2.2
+
+# ---------- 交互式 (可选, 仅运行 Inference/Notebooks 时使用) ----------
+# jupyter
+# notebook
